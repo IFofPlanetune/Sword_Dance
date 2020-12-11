@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -19,8 +21,6 @@ public class TimingManager : MonoBehaviour
     {
         calibrationDelays = new List<float>();
         calibrationFlag = false;
-        float bps = bpm / 60f;
-        maxTime = 1 / bps / 2;
     }
 
     void Update()
@@ -40,9 +40,11 @@ public class TimingManager : MonoBehaviour
     }
 
     //enable the beat to sync up to audio sources
-    public void StartTimer()
+    public void Run()
     {
-        StartCoroutine(Beat());
+        float bps = bpm / 60f;
+        maxTime = 1 / bps / 2;
+        Beat();
     }
 
     //starts calibration process
@@ -62,14 +64,11 @@ public class TimingManager : MonoBehaviour
         {
             Debug.Log("Ending Calibration without any changes");
             return;
-        }   
-
-        float delay_sum = 0;
-        foreach (float f in calibrationDelays)
-        {
-            delay_sum += f;
         }
-        calCorr = delay_sum / calibrationDelays.Count;
+
+        //take the median
+        calibrationDelays.Sort();
+        calCorr = calibrationDelays[calibrationDelays.Count/2];
         
         Debug.Log("Ending Calibration");
         Debug.Log("Avg delay is: " + calCorr);
@@ -84,7 +83,7 @@ public class TimingManager : MonoBehaviour
     }
 
     //Coroutine for beat
-    IEnumerator Beat()
+    async void Beat()
     {
         float bps = bpm / 60f;
         int counter = 0;
@@ -93,7 +92,7 @@ public class TimingManager : MonoBehaviour
             beatTime = Time.time;
             counter = (counter % 4) + 1;
             //print(counter);
-            yield return new WaitForSeconds(1f/bps);
+            await Task.Delay(TimeSpan.FromSeconds(1f/bps));
         }
     }
 }

@@ -6,12 +6,14 @@ public class GameManager : MonoBehaviour
 {
     public TimingManager TM;
     public InputManager IM;
+    public InputVisualizer IV;
     public AudioSource metronome;
 
     void Start()
     {
         //start Timing Manager and Audio source
-        TM.StartTimer();
+        TM.Run();
+        IV.Run();
         metronome.Play();
 
         //set reference in InputManager
