@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 public class InputManager : MonoBehaviour
 {
     public TimingManager TM;
+    public GameManager GM;
 
     // Start is called before the first frame update
     void Start()
@@ -35,6 +36,8 @@ public class InputManager : MonoBehaviour
             return;
         float delay = TM.CheckDelay();
         Debug.Log("Pressed Left with a delay of " + delay + "s");
+        if(!TM.calibrationFlag)
+            GM.UseMagic();
     }
 
     public void Right(InputAction.CallbackContext context)
@@ -43,5 +46,7 @@ public class InputManager : MonoBehaviour
             return;
         float delay = TM.CheckDelay();
         Debug.Log("Pressed Right with a delay of " + delay + "s");
+        if(!TM.calibrationFlag)
+            GM.UseSword();
     }
 }

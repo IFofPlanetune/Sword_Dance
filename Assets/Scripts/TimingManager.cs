@@ -17,10 +17,14 @@ public class TimingManager : MonoBehaviour
 
     private List<float> calibrationDelays;
 
-    void Start()
+    void Awake()
     {
         calibrationDelays = new List<float>();
         calibrationFlag = false;
+    }
+
+    void Start()
+    {
     }
 
     void Update()

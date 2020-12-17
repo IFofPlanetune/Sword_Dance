@@ -14,12 +14,24 @@ public class InputVisualizer : MonoBehaviour
     private float duration;
     private float time;
 
+    private List<GameObject> attacks;
+    public enum attackType
+    {
+        magic, melee
+    }
+    private GameObject melee;
+    private GameObject magic;
+
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         startPos = transform.Find("StartSlider").position;
         endPos = transform.Find("EndSlider").position;
         ball = transform.Find("Ball").gameObject;
+
+        attacks = new List<GameObject>();
+        melee = Resources.Load("Prefabs/Melee") as GameObject;
+        magic = Resources.Load("Prefabs/Magic") as GameObject;
     }
 
     public void Run()
@@ -35,12 +47,33 @@ public class InputVisualizer : MonoBehaviour
         while (true)
         {
             time += Time.deltaTime;
-            time = Mathf.Min(time, duration);
-            ball.transform.position = Vector3.Lerp(startPos, endPos, time / duration);
-            if (time == duration)
-                time = 0;
+            ball.transform.position = Vector3.Lerp(startPos, endPos, Mathf.Min(time / duration,duration));
+            if (time > duration)
+            {
+                foreach (GameObject g in attacks)
+                    Destroy(g);
+                attacks.Clear();
+                time -= duration;
+            }
             yield return null;
         }
+    }
+
+    public void Spawn(attackType type)
+    {
+        GameObject atk = null;
+        switch(type)
+        {
+            case attackType.magic:
+                atk = magic;
+                break;
+            case attackType.melee:
+                atk = melee;
+                break;
+            default:
+                break;
+        }
+        attacks.Add(Instantiate(atk, ball.transform.position, Quaternion.identity, transform));
     }
 
 }

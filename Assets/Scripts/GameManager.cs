@@ -11,17 +11,28 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        //set cross references
+        IM.GM = this;
+        IM.TM = TM;
+
         //start Timing Manager and Audio source
         TM.Run();
         IV.Run();
-        metronome.Play();
-
-        //set reference in InputManager
-        IM.TM = TM;
+        //metronome.Play();
     }
 
     void Update()
     {
         
+    }
+
+    public void UseMagic()
+    {
+        IV.Spawn(InputVisualizer.attackType.magic);
+    }
+
+    public void UseSword()
+    {
+        IV.Spawn(InputVisualizer.attackType.melee);
     }
 }
