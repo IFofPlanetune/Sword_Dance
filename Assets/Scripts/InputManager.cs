@@ -7,6 +7,7 @@ public class InputManager : MonoBehaviour
 {
     public TimingManager TM;
     public GameManager GM;
+    public MenuManager MM;
 
     // Start is called before the first frame update
     void Start()
@@ -48,5 +49,26 @@ public class InputManager : MonoBehaviour
         Debug.Log("Pressed Right with a delay of " + delay + "s");
         if(!TM.calibrationFlag)
             GM.UseSword();
+    }
+
+    public void MenuUp(InputAction.CallbackContext context)
+    {
+        if (!context.performed)
+            return;
+        MM.Up();
+    }
+
+    public void MenuDown(InputAction.CallbackContext context)
+    {
+        if (!context.performed)
+            return;
+        MM.Down();
+    }
+
+    public void MenuConfirm(InputAction.CallbackContext context)
+    {
+        if (!context.performed)
+            return;
+        MM.Select();
     }
 }

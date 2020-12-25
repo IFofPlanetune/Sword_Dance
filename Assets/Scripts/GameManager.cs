@@ -5,25 +5,21 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public TimingManager TM;
+    public MenuManager MM;
     public InputManager IM;
     public InputVisualizer IV;
-    public AudioSource metronome;
 
     void Start()
     {
         //set cross references
+        MM.GM = this;
         IM.GM = this;
         IM.TM = TM;
+        IM.MM = MM;
 
         //start Timing Manager and Audio source
         TM.Run();
         IV.Run();
-        //metronome.Play();
-    }
-
-    void Update()
-    {
-        
     }
 
     public void UseMagic()
@@ -34,5 +30,17 @@ public class GameManager : MonoBehaviour
     public void UseSword()
     {
         IV.Spawn(InputVisualizer.attackType.melee);
+    }
+
+    public void Attack()
+    {
+        //TO-DO
+        Debug.Log("Attack selected");
+    }
+
+    public void Heal()
+    {
+        //TO-DO
+        Debug.Log("Heal selected");
     }
 }
