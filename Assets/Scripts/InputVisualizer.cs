@@ -36,7 +36,7 @@ public class InputVisualizer : MonoBehaviour
 
     public void Run()
     {
-        duration = bpm / 60f;
+        duration = 4 / (bpm / 60f);
         time = duration/8;
         StartCoroutine(Beat());
     }

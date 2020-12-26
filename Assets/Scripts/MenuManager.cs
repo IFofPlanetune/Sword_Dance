@@ -93,10 +93,10 @@ public class MenuManager : MonoBehaviour
         switch(selAction)
         {
             case action.attack:
-                GM.Attack();
+                StartCoroutine(GM.Attack());
                 break;
             case action.heal:
-                GM.Heal();
+                StartCoroutine(GM.Heal());
                 break;
             default:
                 break;

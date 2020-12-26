@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -11,20 +12,39 @@ public class TimingManager : MonoBehaviour
     public int bpm = 140;
     public bool calibrationFlag;
 
-    private float beatTime = 0;
-    private float maxTime = 0;
-    private float calCorr = 0;
+    //public flags the activate on beginning and end of beat
+    public bool beatOne;
+    public bool beatFour;
+
+    private float beatTime;
+    private float maxTime;
+    private float calCorr;
+    private int counter;
 
     private List<float> calibrationDelays;
+
+    //token to cancel the beat
+    CancellationTokenSource tSource;
 
     void Awake()
     {
         calibrationDelays = new List<float>();
         calibrationFlag = false;
+
+        beatOne = false;
+        beatFour = false;
+
+        beatTime = 0;
+        maxTime = 0;
+        calCorr = 0;
+        counter = 0;
+
+        tSource = new CancellationTokenSource();
     }
 
     void Start()
     {
+
     }
 
     void Update()
@@ -90,13 +110,36 @@ public class TimingManager : MonoBehaviour
     async void Beat()
     {
         float bps = bpm / 60f;
-        int counter = 0;
-        while (true)
+        counter = 0;
+        while (!tSource.Token.IsCancellationRequested)
         {
             beatTime = Time.time;
             counter = (counter % 4) + 1;
+            if(counter == 1)
+            {
+                beatOne = true;
+                beatFour = false;
+            }
+            else if (counter == 4)
+            {
+                beatFour = true;
+            }
+            else
+            {
+                beatOne = false;
+            }
             //print(counter);
             await Task.Delay(TimeSpan.FromSeconds(1f/bps));
         }
+    }
+
+    public void StopBeat()
+    {
+        tSource.Cancel();
+    }
+
+    void OnDestroy()
+    {
+        StopBeat();
     }
 }
