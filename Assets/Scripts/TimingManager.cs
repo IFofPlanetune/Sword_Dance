@@ -21,6 +21,8 @@ public class TimingManager : MonoBehaviour
     private float calCorr;
     private int counter;
 
+    private Dictionary<int, InputManager.attackType> pattern;
+
     private List<float> calibrationDelays;
 
     //token to cancel the beat
@@ -66,8 +68,8 @@ public class TimingManager : MonoBehaviour
     //enable the beat to sync up to audio sources
     public void Run()
     {
-        float bps = bpm / 60f;
-        maxTime = 1 / bps / 2;
+        float tps = bpm / 60f * (TimingParameters.smallestUnit / 4);
+        maxTime = 1 / tps / 2;
         Beat();
     }
 
@@ -106,10 +108,32 @@ public class TimingManager : MonoBehaviour
         return delay;
     }
 
+    public bool CheckAttack(float delay)
+    {
+        return Mathf.Abs(delay/maxTime) <= TimingParameters.threshold;
+    }
+
+    //checks if success is successful - id denotes which attack is being tried to defend against
+    public bool CheckDefense(float delay, InputManager.attackType atk, out int id)
+    {
+        InputManager.attackType patAtk;
+        id = counter;
+        if (delay < 0)
+            id++;
+        if (pattern.TryGetValue(id, out patAtk))
+            return (Mathf.Abs(delay / maxTime) <= TimingParameters.threshold) && atk == patAtk;
+        return false;
+    }
+
+    public void SetDefense(Dictionary<int,InputManager.attackType> d)
+    {
+        pattern = d;
+    }
+
     //Coroutine for beat
     async void Beat()
     {
-        float bps = bpm / 60f;
+        float tps = (bpm / 60f); //* (TimingParameters.smallestUnit / 4);
         counter = 0;
         while (!tSource.Token.IsCancellationRequested)
         {
@@ -129,7 +153,7 @@ public class TimingManager : MonoBehaviour
                 beatOne = false;
             }
             //print(counter);
-            await Task.Delay(TimeSpan.FromSeconds(1f/bps));
+            await Task.Delay(TimeSpan.FromSeconds(1f/tps));
         }
     }
 

@@ -17,7 +17,33 @@ public class Entity : MonoBehaviour
     public float def;
     public float mDef;
 
-    public void takeDamage(float dmg)
+    public float GetAttack(InputManager.attackType type)
+    {
+        switch(type)
+        {
+            case InputManager.attackType.magic:
+                return mAtk;
+            case InputManager.attackType.melee:
+                return atk;
+            default:
+                return 0;
+        }
+    }
+
+    public float GetDefense(InputManager.attackType type)
+    {
+        switch (type)
+        {
+            case InputManager.attackType.magic:
+                return mDef;
+            case InputManager.attackType.melee:
+                return def;
+            default:
+                return 0;
+        }
+    }
+
+    public void TakeDamage(float dmg)
     {
         hp -= dmg;
         hpBar.value = hp / maxHP;

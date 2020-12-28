@@ -9,6 +9,11 @@ public class InputManager : MonoBehaviour
     public GameManager GM;
     public MenuManager MM;
 
+    public enum attackType
+    {
+        magic, melee
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -37,8 +42,9 @@ public class InputManager : MonoBehaviour
             return;
         float delay = TM.CheckDelay();
         Debug.Log("Pressed Left with a delay of " + delay + "s");
+
         if(!TM.calibrationFlag)
-            GM.UseMagic();
+            GM.HandleAction(delay, attackType.magic);
     }
 
     public void Right(InputAction.CallbackContext context)
@@ -48,7 +54,7 @@ public class InputManager : MonoBehaviour
         float delay = TM.CheckDelay();
         Debug.Log("Pressed Right with a delay of " + delay + "s");
         if(!TM.calibrationFlag)
-            GM.UseSword();
+            GM.HandleAction(delay, attackType.melee);
     }
 
     public void MenuUp(InputAction.CallbackContext context)

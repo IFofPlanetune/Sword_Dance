@@ -1684,6 +1684,7 @@ MonoBehaviour:
   IV: {fileID: 1447668836}
   player: {fileID: 1441172484}
   enemy: {fileID: 1684012754}
+  bpm: 140
 --- !u!4 &865327730
 Transform:
   m_ObjectHideFlags: 0
@@ -3203,7 +3204,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1684012751}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 608e51c82d5692b44b397f0271bdff9c, type: 3}
+  m_Script: {fileID: 11500000, guid: c45226e3c5e61f34298507e5376fc54c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   GM: {fileID: 0}
@@ -3215,6 +3216,9 @@ MonoBehaviour:
   mAtk: 2
   def: 1
   mDef: 1
+  patterns:
+  - {fileID: 6373746783404450912, guid: d818a1371864f074f80550681e669323, type: 3}
+  - {fileID: 1482903561509167806, guid: 14a3380a4209a3049ac0ad32b90cb2e7, type: 3}
 --- !u!1 &1802072867
 GameObject:
   m_ObjectHideFlags: 0

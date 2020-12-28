@@ -15,10 +15,7 @@ public class InputVisualizer : MonoBehaviour
     private float time;
 
     private List<GameObject> attacks;
-    public enum attackType
-    {
-        magic, melee
-    }
+    
     private GameObject melee;
     private GameObject magic;
 
@@ -36,7 +33,7 @@ public class InputVisualizer : MonoBehaviour
 
     public void Run()
     {
-        duration = 4 / (bpm / 60f);
+        duration = 4 / (bpm / 60f * (TimingParameters.smallestUnit / 4));
         time = duration/8;
         StartCoroutine(Beat());
     }
@@ -59,15 +56,15 @@ public class InputVisualizer : MonoBehaviour
         }
     }
 
-    public void Spawn(attackType type)
+    public void Spawn(InputManager.attackType type)
     {
         GameObject atk = null;
         switch(type)
         {
-            case attackType.magic:
+            case InputManager.attackType.magic:
                 atk = magic;
                 break;
-            case attackType.melee:
+            case InputManager.attackType.melee:
                 atk = melee;
                 break;
             default:
