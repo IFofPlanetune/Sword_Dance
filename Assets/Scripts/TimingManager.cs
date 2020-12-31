@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using TMPro;
 
 public class TimingManager : MonoBehaviour
 {
@@ -12,41 +13,22 @@ public class TimingManager : MonoBehaviour
     public int bpm = 140;
     public bool calibrationFlag;
 
-    //public flags the activate on beginning and end of beat
-    public bool beatOne;
-    public bool beatFour;
-
-    private float beatTime;
-    private float maxTime;
     private float calCorr;
-    private int counter;
-
-    private Dictionary<int, InputManager.attackType> pattern;
-
+    private float maxTime;
     private List<float> calibrationDelays;
 
-    //token to cancel the beat
-    CancellationTokenSource tSource;
+    private Dictionary<int, InputManager.attackType> pattern;
+    
+    private BeatWrapper beat;
 
     void Awake()
     {
         calibrationDelays = new List<float>();
         calibrationFlag = false;
 
-        beatOne = false;
-        beatFour = false;
-
-        beatTime = 0;
-        maxTime = 0;
         calCorr = 0;
-        counter = 0;
 
-        tSource = new CancellationTokenSource();
-    }
-
-    void Start()
-    {
-
+        beat = new BeatWrapper();
     }
 
     void Update()
@@ -65,12 +47,23 @@ public class TimingManager : MonoBehaviour
         }
     }
 
+    public bool BeatOne()
+    {
+        return beat.beatOne;
+    }
+
     //enable the beat to sync up to audio sources
     public void Run()
     {
         float tps = bpm / 60f * (TimingParameters.smallestUnit / 4);
         maxTime = 1 / tps / 2;
-        Beat();
+        beat.bpm = bpm;
+        beat.Run();
+    }
+
+    public void StopBeat()
+    {
+        beat.tSource.Cancel();
     }
 
     //starts calibration process
@@ -104,7 +97,7 @@ public class TimingManager : MonoBehaviour
     public float CheckDelay()
     {
         float curTime = Time.time;
-        float delay = maxTime - (curTime - beatTime) - calCorr;
+        float delay = maxTime - (curTime - beat.beatTime) - calCorr;
         return delay;
     }
 
@@ -117,7 +110,7 @@ public class TimingManager : MonoBehaviour
     public bool CheckDefense(float delay, InputManager.attackType atk, out int id)
     {
         InputManager.attackType patAtk;
-        id = counter;
+        id = beat.counter;
         if (delay < 0)
             id++;
         if (pattern.TryGetValue(id, out patAtk))
@@ -130,40 +123,69 @@ public class TimingManager : MonoBehaviour
         pattern = d;
     }
 
+    void OnDestroy()
+    {
+        StopBeat();
+    }
+}
+
+public class BeatWrapper
+{
+    private TextMeshProUGUI status;
+
+    public int bpm = 140;
+
+    //public flags the activate on beginning of beat
+    public bool beatOne;
+
+    public float beatTime;
+    public int counter;
+
+    //token to cancel the beat
+    public CancellationTokenSource tSource;
+
+    public BeatWrapper()
+    {
+        tSource = new CancellationTokenSource();
+        status = GameObject.FindGameObjectWithTag("Status").GetComponent<TextMeshProUGUI>();
+
+        beatTime = 0;
+        counter = 0;
+    }
+
+    //enable the beat to sync up to audio sources
+    public void Run()
+    {
+        Beat();
+    }
+
     //Coroutine for beat
     async void Beat()
     {
-        float tps = (bpm / 60f); //* (TimingParameters.smallestUnit / 4);
+        float tps = (bpm / 60f) * (TimingParameters.smallestUnit / 4f);
         counter = 0;
+        System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
+        System.Diagnostics.Stopwatch checker = new System.Diagnostics.Stopwatch();
+        float f = System.Diagnostics.Stopwatch.Frequency;
         while (!tSource.Token.IsCancellationRequested)
         {
             beatTime = Time.time;
-            counter = (counter % 4) + 1;
-            if(counter == 1)
+            counter = (counter % TimingParameters.smallestUnit) + 1;
+            if (counter == 1)
             {
                 beatOne = true;
-                beatFour = false;
-            }
-            else if (counter == 4)
-            {
-                beatFour = true;
             }
             else
             {
                 beatOne = false;
             }
-            //print(counter);
-            await Task.Delay(TimeSpan.FromSeconds(1f/tps));
+            status.text = counter.ToString();
+            checker.Stop();
+            //Debug.Log(checker.ElapsedTicks / f);
+            checker.Restart();
+            timer.Stop();
+            await Task.Delay(TimeSpan.FromSeconds((1f / tps) - (timer.ElapsedTicks / f)));
+            timer.Restart();
         }
-    }
-
-    public void StopBeat()
-    {
-        tSource.Cancel();
-    }
-
-    void OnDestroy()
-    {
-        StopBeat();
     }
 }

@@ -8,5 +8,5 @@ public static class TimingParameters
     public static float threshold = 0.2f;
 
     //value which determines the smallest hittable timeUnit (e.g. 4 = Fourths, 8 = Eights, etc.)
-    public static int smallestUnit = 4;
+    public static int smallestUnit = 8;
 }

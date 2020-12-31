@@ -52,6 +52,13 @@ public class Entity : MonoBehaviour
             Defeat();
     }
 
+    public void Heal(float h)
+    {
+        hp = Mathf.Min(hp+h,maxHP);
+        hpBar.value = hp / maxHP;
+        hpText.text = (hp / maxHP * 100) + "%";
+    }
+
     public void Defeat()
     {
         GM.HandleDeath(gameObject.tag);

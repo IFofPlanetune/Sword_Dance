@@ -70,11 +70,14 @@ public class GameManager : MonoBehaviour
     public IEnumerator Attack()
     {
         MM.TurnOff();
-        yield return new WaitUntil(() => TM.beatOne);
+        //if currently on Beat One, wait until roll-over
+        yield return new WaitUntil(() => !TM.BeatOne());
+        yield return new WaitUntil(() => TM.BeatOne());
         isAttacking = true;
         GameObject.FindGameObjectWithTag("Status").GetComponent<TextMeshProUGUI>().text = "Attack";
-        yield return new WaitUntil(() => TM.beatFour);
-        GameObject.FindGameObjectWithTag("Status").GetComponent<TextMeshProUGUI>().text = "";
+        yield return new WaitUntil(() => !TM.BeatOne());
+        yield return new WaitUntil(() => TM.BeatOne());
+        GameObject.FindGameObjectWithTag("Status").GetComponent<TextMeshProUGUI>().text = "Enemy Turn";
         isAttacking = false;
         StartCoroutine(Defend());
     }
@@ -84,32 +87,39 @@ public class GameManager : MonoBehaviour
     {
         //TO-DO
         Debug.Log("Heal selected");
-        yield return new WaitForEndOfFrame();
+        MM.TurnOff();
+        //if currently on Beat One, wait until roll-over
+        yield return new WaitUntil(() => !TM.BeatOne());
+        yield return new WaitUntil(() => TM.BeatOne());
 
-        Defend();
+        GameObject.FindGameObjectWithTag("Status").GetComponent<TextMeshProUGUI>().text = "Healing";
+        player.Heal(5);
+
+        yield return new WaitUntil(() => !TM.BeatOne());
+        yield return new WaitUntil(() => TM.BeatOne());
+
+        StartCoroutine(Defend());
     }
 
     public IEnumerator Defend()
     {
         TM.SetDefense(enemy.GetRandomPattern());
         //Wait empty beat for player to react
-        yield return new WaitUntil(() => TM.beatOne);
-        yield return new WaitUntil(() => TM.beatFour);
-
-        yield return new WaitUntil(() => TM.beatOne);
+        yield return new WaitUntil(() => TM.BeatOne());
+        yield return new WaitUntil(() => !TM.BeatOne());
+        yield return new WaitUntil(() => TM.BeatOne());
+        yield return new WaitUntil(() => !TM.BeatOne());
 
         isDefending = true;
         GameObject.FindGameObjectWithTag("Status").GetComponent<TextMeshProUGUI>().text = "Defend";
 
-        yield return new WaitUntil(() => TM.beatFour);
+        yield return new WaitUntil(() => TM.BeatOne());
 
         GameObject.FindGameObjectWithTag("Status").GetComponent<TextMeshProUGUI>().text = "";
         isDefending = false;
 
         foreach(InputManager.attackType atk in enemy.SuccessfulAttacks())
         {
-            Debug.Log(enemy.GetAttack(atk));
-            Debug.Log(player.GetDefense(atk));
             float dmg = enemy.GetAttack(atk) - player.GetDefense(atk);
             player.TakeDamage(dmg);
         }
