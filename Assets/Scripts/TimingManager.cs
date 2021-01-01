@@ -114,7 +114,12 @@ public class TimingManager : MonoBehaviour
         if (delay < 0)
             id++;
         if (pattern.TryGetValue(id, out patAtk))
+        {
+            Debug.Log("index: " + id);
+            Debug.Log("Type matching: " + (atk == patAtk));
+            Debug.Log("Delay: " + delay / maxTime);
             return (Mathf.Abs(delay / maxTime) <= TimingParameters.threshold) && atk == patAtk;
+        }
         return false;
     }
 
@@ -122,6 +127,7 @@ public class TimingManager : MonoBehaviour
     {
         pattern = d;
     }
+
 
     void OnDestroy()
     {
@@ -165,10 +171,11 @@ public class BeatWrapper
         float tps = (bpm / 60f) * (TimingParameters.smallestUnit / 4f);
         counter = 0;
         System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
-        System.Diagnostics.Stopwatch checker = new System.Diagnostics.Stopwatch();
         float f = System.Diagnostics.Stopwatch.Frequency;
+        float delay = 0;
         while (!tSource.Token.IsCancellationRequested)
         {
+            timer.Restart();
             beatTime = Time.time;
             counter = (counter % TimingParameters.smallestUnit) + 1;
             if (counter == 1)
@@ -180,12 +187,10 @@ public class BeatWrapper
                 beatOne = false;
             }
             status.text = counter.ToString();
-            checker.Stop();
-            //Debug.Log(checker.ElapsedTicks / f);
-            checker.Restart();
+            await Task.Delay(TimeSpan.FromSeconds((1f / tps) - delay));
             timer.Stop();
-            await Task.Delay(TimeSpan.FromSeconds((1f / tps) - (timer.ElapsedTicks / f)));
-            timer.Restart();
+            if(counter != 1)
+                delay = (timer.ElapsedTicks / f) - ((1f / tps) - delay);
         }
     }
 }

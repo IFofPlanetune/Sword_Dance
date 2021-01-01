@@ -60,6 +60,7 @@ public class GameManager : MonoBehaviour
             int index;
             if (TM.CheckDefense(delay,type, out index))
             {
+                Debug.Log("Block successful!");
                 enemy.DeflectAttack(index);
             }
         }
