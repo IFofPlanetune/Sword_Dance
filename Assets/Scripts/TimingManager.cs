@@ -52,6 +52,11 @@ public class TimingManager : MonoBehaviour
         return beat.beatOne;
     }
 
+    public bool BeatLast()
+    {
+        return beat.beatLast;
+    }
+
     //enable the beat to sync up to audio sources
     public void Run()
     {
@@ -143,6 +148,7 @@ public class BeatWrapper
 
     //public flags the activate on beginning of beat
     public bool beatOne;
+    public bool beatLast;
 
     public float beatTime;
     public int counter;
@@ -181,7 +187,10 @@ public class BeatWrapper
             if (counter == 1)
             {
                 beatOne = true;
+                beatLast = false;
             }
+            else if (counter == TimingParameters.smallestUnit)
+                beatLast = true;
             else
             {
                 beatOne = false;

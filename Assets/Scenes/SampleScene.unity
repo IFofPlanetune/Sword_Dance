@@ -3358,7 +3358,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bpm: 140
   calibrationFlag: 0
-  beatOne: 0
 --- !u!4 &1562616060
 Transform:
   m_ObjectHideFlags: 0

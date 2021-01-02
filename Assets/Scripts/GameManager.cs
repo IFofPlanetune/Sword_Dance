@@ -76,8 +76,7 @@ public class GameManager : MonoBehaviour
         yield return new WaitUntil(() => TM.BeatOne());
         isAttacking = true;
         GameObject.FindGameObjectWithTag("Status").GetComponent<TextMeshProUGUI>().text = "Attack";
-        yield return new WaitUntil(() => !TM.BeatOne());
-        yield return new WaitUntil(() => TM.BeatOne());
+        yield return new WaitUntil(() => TM.BeatLast());
         GameObject.FindGameObjectWithTag("Status").GetComponent<TextMeshProUGUI>().text = "Enemy Turn";
         isAttacking = false;
         StartCoroutine(Defend());
@@ -96,8 +95,7 @@ public class GameManager : MonoBehaviour
         GameObject.FindGameObjectWithTag("Status").GetComponent<TextMeshProUGUI>().text = "Healing";
         player.Heal(5);
 
-        yield return new WaitUntil(() => !TM.BeatOne());
-        yield return new WaitUntil(() => TM.BeatOne());
+        yield return new WaitUntil(() => !TM.BeatLast());
 
         StartCoroutine(Defend());
     }
@@ -107,23 +105,25 @@ public class GameManager : MonoBehaviour
         TM.SetDefense(enemy.GetRandomPattern());
         //Wait empty beat for player to react
         yield return new WaitUntil(() => TM.BeatOne());
-        yield return new WaitUntil(() => !TM.BeatOne());
-        yield return new WaitUntil(() => TM.BeatOne());
-        yield return new WaitUntil(() => !TM.BeatOne());
+        yield return new WaitUntil(() => TM.BeatLast());
 
         isDefending = true;
         GameObject.FindGameObjectWithTag("Status").GetComponent<TextMeshProUGUI>().text = "Defend";
 
         yield return new WaitUntil(() => TM.BeatOne());
+        yield return new WaitUntil(() => TM.BeatLast());
+        yield return new WaitUntil(() => TM.BeatOne());
 
         GameObject.FindGameObjectWithTag("Status").GetComponent<TextMeshProUGUI>().text = "";
         isDefending = false;
 
+        float dmg = 0;
         foreach(InputManager.attackType atk in enemy.SuccessfulAttacks())
         {
-            float dmg = enemy.GetAttack(atk) - player.GetDefense(atk);
-            player.TakeDamage(dmg);
+            dmg += enemy.GetAttack(atk) - player.GetDefense(atk);
         }
+        player.TakeDamage(dmg);
+
         enemy.DestroyPattern();
         MM.TurnOn();
     }

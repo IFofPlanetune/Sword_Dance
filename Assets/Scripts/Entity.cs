@@ -46,8 +46,12 @@ public class Entity : MonoBehaviour
     public void TakeDamage(float dmg)
     {
         hp -= dmg;
+
+        DamagePopup.Create((int) dmg, transform);
+
         hpBar.value = hp / maxHP;
         hpText.text = (hp / maxHP * 100) + "%";
+
         if (hp <= 0)
             Defeat();
     }
