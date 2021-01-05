@@ -19,6 +19,9 @@ public class InputVisualizer : MonoBehaviour
     private GameObject melee;
     private GameObject magic;
 
+    private bool active;
+    private CanvasGroup cg;
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -29,6 +32,21 @@ public class InputVisualizer : MonoBehaviour
         attacks = new List<GameObject>();
         melee = Resources.Load("Prefabs/Melee") as GameObject;
         magic = Resources.Load("Prefabs/Magic") as GameObject;
+
+        active = false;
+        cg = GetComponent<CanvasGroup>();
+    }
+
+    public void Disable()
+    {
+        active = false;
+        cg.alpha = 0.4f;
+    }
+
+    public void Enable()
+    {
+        active = true;
+        cg.alpha = 1f;
     }
 
     public void Run()
@@ -58,6 +76,9 @@ public class InputVisualizer : MonoBehaviour
 
     public void Spawn(InputManager.attackType type)
     {
+        if (!active)
+            return;
+
         GameObject atk = null;
         switch(type)
         {

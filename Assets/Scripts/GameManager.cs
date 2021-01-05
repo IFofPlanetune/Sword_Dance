@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     public MenuManager MM;
     public InputManager IM;
     public InputVisualizer IV;
+    public AnimationManager AM;
 
     public Entity player;
     public Enemy enemy;
@@ -71,23 +72,29 @@ public class GameManager : MonoBehaviour
     public IEnumerator Attack()
     {
         MM.TurnOff();
-        //if currently on Beat One, wait until roll-over
-        yield return new WaitUntil(() => !TM.BeatOne());
-        yield return new WaitUntil(() => TM.BeatOne());
-        isAttacking = true;
-        GameObject.FindGameObjectWithTag("Status").GetComponent<TextMeshProUGUI>().text = "Attack";
+        AM.MovePlayerToEnemy();
+        //wait for new beat to start
         yield return new WaitUntil(() => TM.BeatLast());
+        yield return new WaitUntil(() => TM.BeatOne());
+
+        isAttacking = true;
+        IV.Enable();
+        GameObject.FindGameObjectWithTag("Status").GetComponent<TextMeshProUGUI>().text = "Attack";
+
+        yield return new WaitUntil(() => TM.BeatLast());
+
         GameObject.FindGameObjectWithTag("Status").GetComponent<TextMeshProUGUI>().text = "Enemy Turn";
         isAttacking = false;
+        IV.Disable();
+        AM.PlayerToIdle();
         StartCoroutine(Defend());
     }
 
 
     public IEnumerator Heal()
     {
-        //TO-DO
-        Debug.Log("Heal selected");
         MM.TurnOff();
+
         //if currently on Beat One, wait until roll-over
         yield return new WaitUntil(() => !TM.BeatOne());
         yield return new WaitUntil(() => TM.BeatOne());
@@ -95,8 +102,9 @@ public class GameManager : MonoBehaviour
         GameObject.FindGameObjectWithTag("Status").GetComponent<TextMeshProUGUI>().text = "Healing";
         player.Heal(5);
 
-        yield return new WaitUntil(() => !TM.BeatLast());
+        yield return new WaitUntil(() => TM.BeatLast());
 
+        GameObject.FindGameObjectWithTag("Status").GetComponent<TextMeshProUGUI>().text = "Enemy Turn";
         StartCoroutine(Defend());
     }
 
@@ -107,7 +115,9 @@ public class GameManager : MonoBehaviour
         yield return new WaitUntil(() => TM.BeatOne());
         yield return new WaitUntil(() => TM.BeatLast());
 
+        IV.Enable();
         isDefending = true;
+        AM.MoveEnemyToPlayer();
         GameObject.FindGameObjectWithTag("Status").GetComponent<TextMeshProUGUI>().text = "Defend";
 
         yield return new WaitUntil(() => TM.BeatOne());
@@ -116,6 +126,8 @@ public class GameManager : MonoBehaviour
 
         GameObject.FindGameObjectWithTag("Status").GetComponent<TextMeshProUGUI>().text = "";
         isDefending = false;
+        IV.Disable();
+        AM.EnemyToIdle();
 
         float dmg = 0;
         foreach(InputManager.attackType atk in enemy.SuccessfulAttacks())

@@ -195,7 +195,7 @@ public class BeatWrapper
             {
                 beatOne = false;
             }
-            status.text = counter.ToString();
+            //status.text = counter.ToString();
             await Task.Delay(TimeSpan.FromSeconds((1f / tps) - delay));
             timer.Stop();
             if(counter != 1)
