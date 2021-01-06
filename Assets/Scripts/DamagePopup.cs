@@ -7,7 +7,7 @@ public class DamagePopup : MonoBehaviour
 {
     private TextMeshPro tmp;
 
-    public float displayTime = 2f;
+    public float displayTime = 1f;
     public float speed = 2f;
 
     public static DamagePopup Create(int dmg, Transform parent)

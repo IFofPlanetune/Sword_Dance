@@ -14,7 +14,7 @@ public class Enemy : Entity
     {
         dict = new Dictionary<int,InputManager.attackType>();
 
-        currentPattern = Instantiate(patterns[id], GameObject.Find("Canvas").transform);
+        currentPattern = Instantiate(patterns[id], GameObject.Find("InputVisualizer").transform);
 
         //Create dict from name
         string name = currentPattern.name.Split('(')[0];

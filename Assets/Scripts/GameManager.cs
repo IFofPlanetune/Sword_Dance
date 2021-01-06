@@ -51,6 +51,7 @@ public class GameManager : MonoBehaviour
             if (TM.CheckAttack(delay))
             {
                 Debug.Log("Successful Attack!");
+                AM.PlayerAttack(type);
                 float dmg = Mathf.Max(player.GetAttack(type) - enemy.GetDefense(type), 1);
                 enemy.TakeDamage(dmg);
             }
