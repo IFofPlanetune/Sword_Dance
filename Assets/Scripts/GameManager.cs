@@ -55,6 +55,12 @@ public class GameManager : MonoBehaviour
                 float dmg = Mathf.Max(player.GetAttack(type) - enemy.GetDefense(type), 1);
                 enemy.TakeDamage(dmg);
             }
+            else
+            {
+                AM.PlayerTrip();
+                IV.Disable();
+                isAttacking = false;
+            }
         }
         //Handle Defense
         else

@@ -116,11 +116,9 @@ public class TimingManager : MonoBehaviour
     {
         InputManager.attackType patAtk;
         id = beat.counter;
-        if (delay < 0)
-            id++;
+        Debug.Log("index: " + id);
         if (pattern.TryGetValue(id, out patAtk))
         {
-            Debug.Log("index: " + id);
             Debug.Log("Type matching: " + (atk == patAtk));
             Debug.Log("Delay: " + delay / maxTime);
             return (Mathf.Abs(delay / maxTime) <= TimingParameters.threshold) && atk == patAtk;

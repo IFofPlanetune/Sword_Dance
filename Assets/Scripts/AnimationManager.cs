@@ -27,6 +27,12 @@ public class AnimationManager : MonoBehaviour
     public void PlayerToIdle()
     {
         player.SetInteger("Enemy", 0);
+        player.SetBool("Trip", false);
+    }
+
+    public void PlayerTrip()
+    {
+        player.SetBool("Trip", true);
     }
 
     public void EnemyToIdle()
@@ -67,4 +73,6 @@ public class AnimationManager : MonoBehaviour
             player.transform.position + new Vector3(2, 0, 0), explosion.transform.rotation);
         Destroy(expInst, 0.2f);
     }
+
+    
 }

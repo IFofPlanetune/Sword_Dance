@@ -19,7 +19,7 @@
                     "id": "890083aa-ba9a-42ac-804e-50d36c007fb5",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "Press"
+                    "interactions": ""
                 },
                 {
                     "name": "Right",
@@ -27,7 +27,7 @@
                     "id": "64acbfdf-8846-49f1-ae25-f58e6c18981c",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "Press"
+                    "interactions": ""
                 },
                 {
                     "name": "MenuUp",
