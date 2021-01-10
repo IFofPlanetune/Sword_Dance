@@ -18,12 +18,14 @@ public class GameManager : MonoBehaviour
 
     private bool isAttacking;
     private bool isDefending;
+    private bool defenseEnabled;
 
     void Start()
     {
         //set cross references
         MM.GM = this;
         IM.GM = this;
+        TM.GM = this;
         IM.TM = TM;
         IM.MM = MM;
 
@@ -32,6 +34,7 @@ public class GameManager : MonoBehaviour
 
         isAttacking = false;
         isDefending = false;
+        defenseEnabled = true;
 
         //start Timing Manager and Input Visualization
         TM.bpm = bpm;
@@ -44,6 +47,8 @@ public class GameManager : MonoBehaviour
     {
         if (!isAttacking && !isDefending)
             return;
+
+        IV.Spawn(type);
 
         //Handle Attack
         if (isAttacking)
@@ -65,15 +70,35 @@ public class GameManager : MonoBehaviour
         //Handle Defense
         else
         {
+            if (!defenseEnabled)
+                return;
             int index;
-            if (TM.CheckDefense(delay,type, out index))
+            AM.PlayerDefense(type);
+            if (TM.CheckDefense(delay, type, out index))
             {
                 Debug.Log("Block successful!");
                 enemy.DeflectAttack(index);
             }
+            else
+            {
+                StartCoroutine(DisableDefense());
+            }
         }
+    }
 
-        IV.Spawn(type);
+    IEnumerator DisableDefense()
+    {
+        defenseEnabled = false;
+        IV.Disable();
+        //wait for one tick
+        yield return new WaitForSeconds(1 / (bpm / 60f * (TimingParameters.smallestUnit / 4)));
+        defenseEnabled = true;
+        IV.Enable();
+    }
+
+    public void EnemyAction(InputManager.attackType type)
+    {
+        AM.EnemyAttack(type);
     }
 
     public IEnumerator Attack()

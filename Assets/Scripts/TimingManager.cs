@@ -9,7 +9,7 @@ using TMPro;
 
 public class TimingManager : MonoBehaviour
 {
-
+    public GameManager GM;
     public int bpm = 140;
     public bool calibrationFlag;
 
@@ -108,6 +108,7 @@ public class TimingManager : MonoBehaviour
 
     public bool CheckAttack(float delay)
     {
+        Debug.Log("Delay %: " + delay / maxTime);
         return Mathf.Abs(delay/maxTime) <= TimingParameters.threshold;
     }
 
@@ -120,7 +121,7 @@ public class TimingManager : MonoBehaviour
         if (pattern.TryGetValue(id, out patAtk))
         {
             Debug.Log("Type matching: " + (atk == patAtk));
-            Debug.Log("Delay: " + delay / maxTime);
+            Debug.Log("Delay %: " + delay / maxTime);
             return (Mathf.Abs(delay / maxTime) <= TimingParameters.threshold) && atk == patAtk;
         }
         return false;
@@ -128,7 +129,20 @@ public class TimingManager : MonoBehaviour
 
     public void SetDefense(Dictionary<int,InputManager.attackType> d)
     {
-        pattern = d;
+        pattern = new Dictionary<int,InputManager.attackType>(d);
+        StartCoroutine(AttackSignal());
+    }
+
+    IEnumerator AttackSignal()
+    {
+        yield return new WaitUntil(() => BeatOne());
+        yield return new WaitUntil(() => BeatLast());
+        foreach (int i in pattern.Keys)
+        {
+            yield return new WaitUntil(() => i == beat.counter);
+            yield return new WaitForSeconds(maxTime);
+            GM.EnemyAction(pattern[i]);
+        }
     }
 
 
