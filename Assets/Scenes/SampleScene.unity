@@ -1876,8 +1876,8 @@ MonoBehaviour:
   AM: {fileID: 2115374877}
   player: {fileID: 1441172484}
   enemy: {fileID: 1684012754}
-  bgm: {fileID: 8300000, guid: 7ebf344217ec87043ad92ae0e071588b, type: 3}
-  bpm: 57
+  bgm: {fileID: 8300000, guid: 5f3856cd2834ae644a1a35a9e2e67c27, type: 3}
+  bpm: 100
 --- !u!4 &865327730
 Transform:
   m_ObjectHideFlags: 0

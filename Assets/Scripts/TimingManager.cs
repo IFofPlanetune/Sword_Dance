@@ -197,6 +197,7 @@ public class BeatWrapper
         float tps = (bpm / 60f) * (TimingParameters.smallestUnit / 4f);
         counter = 0;
         System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
+        System.Diagnostics.Stopwatch checker = new System.Diagnostics.Stopwatch();
         float f = System.Diagnostics.Stopwatch.Frequency;
         float delay = 0;
         while (!tSource.Token.IsCancellationRequested)
@@ -206,6 +207,9 @@ public class BeatWrapper
             counter = (counter % TimingParameters.smallestUnit) + 1;
             if (counter == 1)
             {
+                checker.Stop();
+                //Debug.Log("TM: " + checker.ElapsedMilliseconds);
+                checker.Restart();
                 beatOne = true;
                 beatLast = false;
             }
@@ -215,9 +219,9 @@ public class BeatWrapper
             {
                 beatOne = false;
             }
-            status.text = counter.ToString();
             await Task.Delay(TimeSpan.FromSeconds((1f / tps) - delay));
             timer.Stop();
+            delay = (timer.ElapsedTicks / f) - ((1f / tps) - delay);
         }
     }
 }

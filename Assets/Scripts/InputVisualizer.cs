@@ -36,7 +36,7 @@ public class InputVisualizer : MonoBehaviour
         melee = Resources.Load("Prefabs/Melee") as GameObject;
         magic = Resources.Load("Prefabs/Magic") as GameObject;
 
-        active = false;
+        active = true;
         cg = GetComponent<CanvasGroup>();
     }
 
@@ -55,7 +55,8 @@ public class InputVisualizer : MonoBehaviour
     public void Run()
     {
         duration = 4 / (bpm / 60f);
-        time = duration/8;
+        print(duration);
+        time = duration / 4;
         runningBeat = StartCoroutine(Beat());
     }
 
@@ -69,16 +70,24 @@ public class InputVisualizer : MonoBehaviour
     //Coroutine that moves the ball
     IEnumerator Beat()
     {
+        System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
+        float f = System.Diagnostics.Stopwatch.Frequency;
+        timer.Restart();
+        float lastTime = Time.time;
         while (true)
         {
             time += Time.deltaTime;
-            ball.transform.position = Vector3.Lerp(startPos, endPos, Mathf.Min(time / duration,duration));
-            if (time > duration)
+            lastTime = Time.time;
+            ball.transform.position = Vector3.Lerp(startPos, endPos, Mathf.Min(time / duration, 1));
+            if (time >= duration)
             {
+                timer.Stop();
+                //Debug.Log("IV: " + timer.ElapsedMilliseconds);
+                timer.Restart();
                 foreach (GameObject g in attacks)
                     Destroy(g);
                 attacks.Clear();
-                time = 0;
+                time -= duration;
             }
             yield return null;
         }

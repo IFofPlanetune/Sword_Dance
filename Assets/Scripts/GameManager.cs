@@ -23,6 +23,8 @@ public class GameManager : MonoBehaviour
     private bool isDefending;
     private bool defenseEnabled;
 
+    private string lastText;
+
     void Start()
     {
         //set cross references
@@ -31,6 +33,7 @@ public class GameManager : MonoBehaviour
         TM.GM = this;
         IM.TM = TM;
         IM.MM = MM;
+        
 
         player.GM = this;
         enemy.GM = this;
@@ -58,6 +61,7 @@ public class GameManager : MonoBehaviour
             TM.Reset();
             IV.Reset();
         }
+
     }
 
     public void HandleAction(float delay, InputManager.attackType type)
