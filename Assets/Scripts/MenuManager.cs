@@ -59,7 +59,6 @@ public class MenuManager : MonoBehaviour
 
     public void Down()
     {
-        Debug.Log("DOWN");
         if (!active)
             return;
 

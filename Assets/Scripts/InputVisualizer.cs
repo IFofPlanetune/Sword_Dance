@@ -10,9 +10,11 @@ public class InputVisualizer : MonoBehaviour
     private Vector3 startPos;
     private Vector3 endPos;
     private GameObject ball;
+    private Vector3 ballStart;
 
     private float duration;
     private float time;
+    private Coroutine runningBeat;
 
     private List<GameObject> attacks;
     
@@ -28,6 +30,7 @@ public class InputVisualizer : MonoBehaviour
         startPos = transform.Find("StartSlider").position;
         endPos = transform.Find("EndSlider").position;
         ball = transform.Find("Ball").gameObject;
+        ballStart = ball.transform.position;
 
         attacks = new List<GameObject>();
         melee = Resources.Load("Prefabs/Melee") as GameObject;
@@ -53,7 +56,14 @@ public class InputVisualizer : MonoBehaviour
     {
         duration = 4 / (bpm / 60f);
         time = duration/8;
-        StartCoroutine(Beat());
+        runningBeat = StartCoroutine(Beat());
+    }
+
+    public void Reset()
+    {
+        StopCoroutine(runningBeat);
+        ball.transform.position = ballStart;
+        Run();
     }
 
     //Coroutine that moves the ball
@@ -68,7 +78,7 @@ public class InputVisualizer : MonoBehaviour
                 foreach (GameObject g in attacks)
                     Destroy(g);
                 attacks.Clear();
-                time -= duration;
+                time = 0;
             }
             yield return null;
         }

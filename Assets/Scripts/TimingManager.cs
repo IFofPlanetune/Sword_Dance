@@ -39,7 +39,7 @@ public class TimingManager : MonoBehaviour
         {
             return;
         }
-        if(Keyboard.current.anyKey.wasPressedThisFrame)
+        if (Keyboard.current.anyKey.wasPressedThisFrame)
         {
             float delay = CheckDelay();
             calibrationDelays.Add(delay);
@@ -64,6 +64,13 @@ public class TimingManager : MonoBehaviour
         maxTime = 1 / tps / 2;
         beat.bpm = bpm;
         beat.Run();
+    }
+
+    public void Reset()
+    {
+        StopBeat();
+        beat = new BeatWrapper();
+        Run();
     }
 
     public void StopBeat()
@@ -180,6 +187,7 @@ public class BeatWrapper
     //enable the beat to sync up to audio sources
     public void Run()
     {
+        tSource = new CancellationTokenSource();
         Beat();
     }
 
@@ -207,11 +215,9 @@ public class BeatWrapper
             {
                 beatOne = false;
             }
-            //status.text = counter.ToString();
+            status.text = counter.ToString();
             await Task.Delay(TimeSpan.FromSeconds((1f / tps) - delay));
             timer.Stop();
-            if(counter != 1)
-                delay = (timer.ElapsedTicks / f) - ((1f / tps) - delay);
         }
     }
 }

@@ -7,8 +7,12 @@ public class AnimationManager : MonoBehaviour
     private Animator player;
     private Animator enemy;
 
+    private AudioSource sfxSource;
+
     private GameObject slash;
+    private AudioClip slashSfx;
     private GameObject explosion;
+    private AudioClip explosionSfx;
     private GameObject magicShield;
     private GameObject meleeShield;
 
@@ -16,8 +20,13 @@ public class AnimationManager : MonoBehaviour
     {
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<Animator>();
         enemy = GameObject.FindGameObjectWithTag("Enemy").GetComponent<Animator>();
+
+        sfxSource = this.GetComponent<AudioSource>();
+
         slash = Resources.Load("Prefabs/Slash") as GameObject;
+        slashSfx = Resources.Load("Sounds/Slash") as AudioClip;
         explosion = Resources.Load("Prefabs/Explosion") as GameObject;
+        explosionSfx = Resources.Load("Sounds/Explosion") as AudioClip;
         magicShield = Resources.Load("Prefabs/MagicShield") as GameObject;
         meleeShield = Resources.Load("Prefabs/MeleeShield") as GameObject;
     }
@@ -68,6 +77,8 @@ public class AnimationManager : MonoBehaviour
     {
         GameObject slashInst = Instantiate(slash, 
             player.transform.position + new Vector3(2,0,0), slash.transform.rotation);
+        sfxSource.clip = slashSfx;
+        sfxSource.Play();
         Destroy(slashInst, 0.2f);
     }
 
@@ -75,6 +86,8 @@ public class AnimationManager : MonoBehaviour
     {
         GameObject expInst = Instantiate(explosion,
             player.transform.position + new Vector3(2, 0, 0), explosion.transform.rotation);
+        sfxSource.clip = explosionSfx;
+        sfxSource.Play();
         Destroy(expInst, 0.2f);
     }
 
@@ -127,6 +140,8 @@ public class AnimationManager : MonoBehaviour
         GameObject slashInst = Instantiate(slash,
             player.transform.position, Quaternion.Euler(
                 slash.transform.rotation.eulerAngles + new Vector3(0,0,180)));
+        sfxSource.clip = slashSfx;
+        sfxSource.Play();
         Destroy(slashInst, 0.2f);
     }
 
@@ -134,6 +149,8 @@ public class AnimationManager : MonoBehaviour
     {
         GameObject expInst = Instantiate(explosion,
             player.transform.position, explosion.transform.rotation);
+        sfxSource.clip = explosionSfx;
+        sfxSource.Play();
         Destroy(expInst, 0.2f);
     }
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class GameManager : MonoBehaviour
 {
@@ -14,7 +15,9 @@ public class GameManager : MonoBehaviour
     public Entity player;
     public Enemy enemy;
 
+    public AudioClip bgm;
     public int bpm;
+    private AudioSource bgmSource;
 
     private bool isAttacking;
     private bool isDefending;
@@ -36,11 +39,25 @@ public class GameManager : MonoBehaviour
         isDefending = false;
         defenseEnabled = true;
 
+        bgmSource = this.GetComponent<AudioSource>();
+        bgmSource.clip = bgm;
+
         //start Timing Manager and Input Visualization
         TM.bpm = bpm;
         IV.bpm = bpm;
         TM.Run();
         IV.Run();
+        bgmSource.Play();
+    }
+
+    void Update()
+    {
+        if (Keyboard.current.f1Key.wasPressedThisFrame)
+        {
+            Debug.Log("Reset");
+            TM.Reset();
+            IV.Reset();
+        }
     }
 
     public void HandleAction(float delay, InputManager.attackType type)
