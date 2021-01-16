@@ -219,9 +219,9 @@ public class BeatWrapper
             {
                 beatOne = false;
             }
-            await Task.Delay(TimeSpan.FromSeconds((1f / tps) - delay));
+            await Task.Delay(TimeSpan.FromSeconds(((1f / tps) - delay)));
             timer.Stop();
-            delay = (timer.ElapsedTicks / f) - ((1f / tps) - delay);
+            delay = Mathf.Max((timer.ElapsedTicks / f) - ((1f / tps) - delay), -(1f / tps));
         }
     }
 }

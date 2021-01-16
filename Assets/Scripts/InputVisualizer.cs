@@ -30,7 +30,7 @@ public class InputVisualizer : MonoBehaviour
         startPos = transform.Find("StartSlider").position;
         endPos = transform.Find("EndSlider").position;
         ball = transform.Find("Ball").gameObject;
-        ballStart = ball.transform.position;
+        ballStart = transform.Find("BallStart").position;
 
         attacks = new List<GameObject>();
         melee = Resources.Load("Prefabs/Melee") as GameObject;
@@ -55,7 +55,6 @@ public class InputVisualizer : MonoBehaviour
     public void Run()
     {
         duration = 4 / (bpm / 60f);
-        print(duration);
         time = duration / 4;
         runningBeat = StartCoroutine(Beat());
     }
@@ -63,8 +62,9 @@ public class InputVisualizer : MonoBehaviour
     public void Reset()
     {
         StopCoroutine(runningBeat);
-        ball.transform.position = ballStart;
-        Run();
+        ball.transform.position = startPos;
+        time = duration / 8 - Time.deltaTime;
+        runningBeat = StartCoroutine(Beat());
     }
 
     //Coroutine that moves the ball
@@ -73,11 +73,9 @@ public class InputVisualizer : MonoBehaviour
         System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
         float f = System.Diagnostics.Stopwatch.Frequency;
         timer.Restart();
-        float lastTime = Time.time;
         while (true)
         {
             time += Time.deltaTime;
-            lastTime = Time.time;
             ball.transform.position = Vector3.Lerp(startPos, endPos, Mathf.Min(time / duration, 1));
             if (time >= duration)
             {

@@ -10,14 +10,14 @@ public class GameManager : MonoBehaviour
     public MenuManager MM;
     public InputManager IM;
     public InputVisualizer IV;
-    public AnimationManager AM;
+    public AnimationManager AnM;
+    public AudioManager AuM;
 
     public Entity player;
     public Enemy enemy;
 
-    public AudioClip bgm;
     public int bpm;
-    private AudioSource bgmSource;
+   
 
     private bool isAttacking;
     private bool isDefending;
@@ -31,8 +31,10 @@ public class GameManager : MonoBehaviour
         MM.GM = this;
         IM.GM = this;
         TM.GM = this;
+        AuM.GM = this;
         IM.TM = TM;
         IM.MM = MM;
+        AnM.AuM = AuM;
         
 
         player.GM = this;
@@ -42,15 +44,13 @@ public class GameManager : MonoBehaviour
         isDefending = false;
         defenseEnabled = true;
 
-        bgmSource = this.GetComponent<AudioSource>();
-        bgmSource.clip = bgm;
 
         //start Timing Manager and Input Visualization
         TM.bpm = bpm;
         IV.bpm = bpm;
         TM.Run();
         IV.Run();
-        bgmSource.Play();
+        AuM.PlayBGM();
     }
 
     void Update()
@@ -62,6 +62,13 @@ public class GameManager : MonoBehaviour
             IV.Reset();
         }
 
+    }
+
+    public void Reset()
+    {
+        Debug.Log("Reset");
+        TM.Reset();
+        IV.Reset();
     }
 
     public void HandleAction(float delay, InputManager.attackType type)
@@ -77,13 +84,13 @@ public class GameManager : MonoBehaviour
             if (TM.CheckAttack(delay))
             {
                 Debug.Log("Successful Attack!");
-                AM.PlayerAttack(type);
+                AnM.PlayerAttack(type);
                 float dmg = Mathf.Max(player.GetAttack(type) - enemy.GetDefense(type), 1);
                 enemy.TakeDamage(dmg);
             }
             else
             {
-                AM.PlayerTrip();
+                AnM.PlayerTrip();
                 IV.Disable();
                 isAttacking = false;
             }
@@ -94,7 +101,7 @@ public class GameManager : MonoBehaviour
             if (!defenseEnabled)
                 return;
             int index;
-            AM.PlayerDefense(type);
+            AnM.PlayerDefense(type);
             if (TM.CheckDefense(delay, type, out index))
             {
                 Debug.Log("Block successful!");
@@ -119,13 +126,13 @@ public class GameManager : MonoBehaviour
 
     public void EnemyAction(InputManager.attackType type)
     {
-        AM.EnemyAttack(type);
+        AnM.EnemyAttack(type);
     }
 
     public IEnumerator Attack()
     {
         MM.TurnOff();
-        AM.MovePlayerToEnemy();
+        AnM.MovePlayerToEnemy();
         //wait for new beat to start
         yield return new WaitUntil(() => TM.BeatLast());
         yield return new WaitUntil(() => TM.BeatOne());
@@ -139,7 +146,7 @@ public class GameManager : MonoBehaviour
         GameObject.FindGameObjectWithTag("Status").GetComponent<TextMeshProUGUI>().text = "Enemy Turn";
         isAttacking = false;
         IV.Disable();
-        AM.PlayerToIdle();
+        AnM.PlayerToIdle();
         StartCoroutine(Defend());
     }
 
@@ -170,7 +177,7 @@ public class GameManager : MonoBehaviour
 
         IV.Enable();
         isDefending = true;
-        AM.MoveEnemyToPlayer();
+        AnM.MoveEnemyToPlayer();
         GameObject.FindGameObjectWithTag("Status").GetComponent<TextMeshProUGUI>().text = "Defend";
 
         yield return new WaitUntil(() => TM.BeatOne());
@@ -180,7 +187,7 @@ public class GameManager : MonoBehaviour
         GameObject.FindGameObjectWithTag("Status").GetComponent<TextMeshProUGUI>().text = "";
         isDefending = false;
         IV.Disable();
-        AM.EnemyToIdle();
+        AnM.EnemyToIdle();
 
         float dmg = 0;
         foreach(InputManager.attackType atk in enemy.SuccessfulAttacks())
