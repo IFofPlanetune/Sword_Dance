@@ -51,7 +51,6 @@ public class GameManager : MonoBehaviour
         TM.Run();
         IV.Run();
 
-        AuM.PlayBGM();
         //IV and TM are better synced when reset for some reason
         StartCoroutine(FixStartup());
     }
@@ -68,6 +67,7 @@ public class GameManager : MonoBehaviour
     {
         yield return new WaitUntil(() => TM.BeatLast());
         Reset();
+        AuM.PlayBGM();
     }
 
     public void Reset()
