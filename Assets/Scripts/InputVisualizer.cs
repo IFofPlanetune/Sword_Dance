@@ -62,8 +62,8 @@ public class InputVisualizer : MonoBehaviour
     public void Reset()
     {
         StopCoroutine(runningBeat);
-        ball.transform.position = startPos;
-        time = duration / 8 - Time.deltaTime;
+        ball.transform.position = ballStart;
+        time = duration / 16;
         runningBeat = StartCoroutine(Beat());
     }
 

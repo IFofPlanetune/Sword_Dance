@@ -28,7 +28,6 @@ public class TimingManager : MonoBehaviour
 
         calCorr = 0;
 
-        beat = new BeatWrapper();
     }
 
     void Update()
@@ -60,6 +59,7 @@ public class TimingManager : MonoBehaviour
     //enable the beat to sync up to audio sources
     public void Run()
     {
+        beat = new BeatWrapper();
         float tps = bpm / 60f * (TimingParameters.smallestUnit / 4);
         maxTime = 1 / tps / 2;
         beat.bpm = bpm;
@@ -69,7 +69,6 @@ public class TimingManager : MonoBehaviour
     public void Reset()
     {
         StopBeat();
-        beat = new BeatWrapper();
         Run();
     }
 
