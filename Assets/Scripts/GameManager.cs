@@ -17,7 +17,7 @@ public class GameManager : MonoBehaviour
     public Enemy enemy;
 
     public int bpm;
-   
+    private bool firstFrame;
 
     private bool isAttacking;
     private bool isDefending;
@@ -50,18 +50,24 @@ public class GameManager : MonoBehaviour
         IV.bpm = bpm;
         TM.Run();
         IV.Run();
+
         AuM.PlayBGM();
+        //IV and TM are better synced when reset for some reason
+        StartCoroutine(FixStartup());
     }
 
     void Update()
     {
         if (Keyboard.current.f1Key.wasPressedThisFrame)
         {
-            Debug.Log("Reset");
-            TM.Reset();
-            IV.Reset();
+            Reset();
         }
+    }
 
+    IEnumerator FixStartup()
+    {
+        yield return new WaitUntil(() => TM.BeatLast());
+        Reset();
     }
 
     public void Reset()

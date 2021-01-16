@@ -23,8 +23,7 @@ public class InputVisualizer : MonoBehaviour
 
     private bool active;
     private CanvasGroup cg;
-
-    // Start is called before the first frame update
+    
     void Awake()
     {
         startPos = transform.Find("StartSlider").position;
@@ -63,6 +62,7 @@ public class InputVisualizer : MonoBehaviour
     {
         StopCoroutine(runningBeat);
         ball.transform.position = ballStart;
+        //I don't know where the 16 comes from here, but it makes it work somehow
         time = duration / 16;
         runningBeat = StartCoroutine(Beat());
     }
