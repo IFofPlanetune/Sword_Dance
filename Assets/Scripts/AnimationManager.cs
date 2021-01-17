@@ -41,6 +41,7 @@ public class AnimationManager : MonoBehaviour
     public void PlayerTrip()
     {
         player.SetBool("Trip", true);
+        AuM.Trip();
     }
 
     public void EnemyToIdle()
@@ -72,7 +73,7 @@ public class AnimationManager : MonoBehaviour
     {
         GameObject slashInst = Instantiate(slash, 
             player.transform.position + new Vector3(2,0,0), slash.transform.rotation);
-        AuM.PlaySFX(InputManager.attackType.melee);
+        AuM.AttackSfx(InputManager.attackType.melee);
         Destroy(slashInst, 0.2f);
     }
 
@@ -80,7 +81,7 @@ public class AnimationManager : MonoBehaviour
     {
         GameObject expInst = Instantiate(explosion,
             player.transform.position + new Vector3(2, 0, 0), explosion.transform.rotation);
-        AuM.PlaySFX(InputManager.attackType.magic);
+        AuM.AttackSfx(InputManager.attackType.magic);
         Destroy(expInst, 0.2f);
     }
 
@@ -133,7 +134,7 @@ public class AnimationManager : MonoBehaviour
         GameObject slashInst = Instantiate(slash,
             player.transform.position, Quaternion.Euler(
                 slash.transform.rotation.eulerAngles + new Vector3(0,0,180)));
-        AuM.PlaySFX(InputManager.attackType.melee);
+        AuM.AttackSfx(InputManager.attackType.melee);
         Destroy(slashInst, 0.2f);
     }
 
@@ -141,7 +142,7 @@ public class AnimationManager : MonoBehaviour
     {
         GameObject expInst = Instantiate(explosion,
             player.transform.position, explosion.transform.rotation);
-        AuM.PlaySFX(InputManager.attackType.magic);
+        AuM.AttackSfx(InputManager.attackType.magic);
         Destroy(expInst, 0.2f);
     }
 

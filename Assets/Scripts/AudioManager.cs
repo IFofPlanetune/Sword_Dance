@@ -11,6 +11,8 @@ public class AudioManager : MonoBehaviour
 
     private AudioClip slashSfx;
     private AudioClip explosionSfx;
+    private AudioClip tripSfx;
+
     public AudioClip bgm;
 
     private float time;
@@ -26,6 +28,7 @@ public class AudioManager : MonoBehaviour
     {
         explosionSfx = Resources.Load("Sounds/Explosion") as AudioClip;
         slashSfx = Resources.Load("Sounds/Slash") as AudioClip;
+        tripSfx = Resources.Load("Sounds/Trip") as AudioClip;
 
         time = 0;
     }
@@ -49,7 +52,7 @@ public class AudioManager : MonoBehaviour
         bgmSource.Play();
     }
 
-    public void PlaySFX(InputManager.attackType type)
+    public void AttackSfx(InputManager.attackType type)
     {
         AudioClip clip = null;
         switch(type)
@@ -64,6 +67,12 @@ public class AudioManager : MonoBehaviour
                 break;
         }
         sfxSource.clip = clip;
+        sfxSource.Play();
+    }
+
+    public void Trip()
+    {
+        sfxSource.clip = tripSfx;
         sfxSource.Play();
     }
 }
