@@ -288,6 +288,17 @@
                 },
                 {
                     "name": "",
+                    "id": "d906b91b-13bd-4057-86cf-a77053856e62",
+                    "path": "<Keyboard>/rightBracket",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Right",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "629f969f-b53b-4caf-9989-f06d6364d9c7",
                     "path": "<Keyboard>/j",
                     "interactions": "",

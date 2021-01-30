@@ -31,9 +31,9 @@ public class InputManager : MonoBehaviour
         if (!context.performed)
             return;
         if (!TM.calibrationFlag)
-            TM.StartCalibration();
+            GM.CalibrationOn();
         else
-            TM.EndCalibration();
+            GM.CalibrationOff();
     }
 
     public void Left(InputAction.CallbackContext context)
@@ -42,9 +42,8 @@ public class InputManager : MonoBehaviour
             return;
         float delay = TM.CheckDelay();
         Debug.Log("Pressed Left with a delay of " + delay + "s");
-
-        if(!TM.calibrationFlag)
-            GM.HandleAction(delay, attackType.magic);
+        
+        GM.HandleAction(delay, attackType.magic);
     }
 
     public void Right(InputAction.CallbackContext context)
@@ -53,13 +52,15 @@ public class InputManager : MonoBehaviour
             return;
         float delay = TM.CheckDelay();
         Debug.Log("Pressed Right with a delay of " + delay + "s");
-        if(!TM.calibrationFlag)
-            GM.HandleAction(delay, attackType.melee);
+
+        GM.HandleAction(delay, attackType.melee);
     }
 
     public void MenuUp(InputAction.CallbackContext context)
     {
         if (!context.performed)
+            return;
+        if (TM.calibrationFlag)
             return;
         MM.Up();
     }
@@ -68,12 +69,16 @@ public class InputManager : MonoBehaviour
     {
         if (!context.performed)
             return;
+        if (TM.calibrationFlag)
+            return;
         MM.Down();
     }
 
     public void MenuConfirm(InputAction.CallbackContext context)
     {
         if (!context.performed)
+            return;
+        if (TM.calibrationFlag)
             return;
         MM.Select();
     }

@@ -19,6 +19,8 @@ public class GameManager : MonoBehaviour
     public int bpm;
     private bool firstFrame;
 
+    private TextMeshProUGUI status; 
+
     private bool isAttacking;
     private bool isDefending;
     private bool defenseEnabled;
@@ -53,14 +55,12 @@ public class GameManager : MonoBehaviour
 
         //IV and TM are better synced when reset for some reason
         StartCoroutine(FixStartup());
+
+        status = GameObject.FindGameObjectWithTag("Status").GetComponent<TextMeshProUGUI>();
     }
 
     void Update()
     {
-        if (Keyboard.current.f1Key.wasPressedThisFrame)
-        {
-            Reset();
-        }
     }
 
     IEnumerator FixStartup()
@@ -72,14 +72,14 @@ public class GameManager : MonoBehaviour
 
     public void Reset()
     {
-        Debug.Log("Reset");
         TM.Reset();
+        Debug.Log("Reset");
         IV.Reset();
     }
 
     public void HandleAction(float delay, InputManager.attackType type)
     {
-        if (!isAttacking && !isDefending)
+        if (!isAttacking && !isDefending && !TM.calibrationFlag)
             return;
 
         IV.Spawn(type);
@@ -102,7 +102,7 @@ public class GameManager : MonoBehaviour
             }
         }
         //Handle Defense
-        else
+        if (isDefending)
         {
             if (!defenseEnabled)
                 return;
@@ -130,6 +130,21 @@ public class GameManager : MonoBehaviour
         IV.Enable();
     }
 
+
+    public void CalibrationOn()
+    {
+        TM.StartCalibration();
+        status.text = "Calibrating";
+        IV.Enable();
+    }
+
+    public void CalibrationOff()
+    {
+        TM.EndCalibration();
+        status.text = "";
+        IV.Disable();
+    }
+
     public void EnemyAction(InputManager.attackType type)
     {
         AnM.EnemyAttack(type);
@@ -145,11 +160,11 @@ public class GameManager : MonoBehaviour
 
         isAttacking = true;
         IV.Enable();
-        GameObject.FindGameObjectWithTag("Status").GetComponent<TextMeshProUGUI>().text = "Attack";
+        status.text = "Attack";
 
         yield return new WaitUntil(() => TM.BeatLast());
 
-        GameObject.FindGameObjectWithTag("Status").GetComponent<TextMeshProUGUI>().text = "Enemy Turn";
+        status.text = "Enemy Turn";
         isAttacking = false;
         IV.Disable();
         AnM.PlayerToIdle();
@@ -165,12 +180,12 @@ public class GameManager : MonoBehaviour
         yield return new WaitUntil(() => !TM.BeatOne());
         yield return new WaitUntil(() => TM.BeatOne());
 
-        GameObject.FindGameObjectWithTag("Status").GetComponent<TextMeshProUGUI>().text = "Healing";
+        status.text = "Healing";
         player.Heal(5);
 
         yield return new WaitUntil(() => TM.BeatLast());
 
-        GameObject.FindGameObjectWithTag("Status").GetComponent<TextMeshProUGUI>().text = "Enemy Turn";
+        status.text = "Enemy Turn";
         StartCoroutine(Defend());
     }
 
@@ -184,13 +199,13 @@ public class GameManager : MonoBehaviour
         IV.Enable();
         isDefending = true;
         AnM.MoveEnemyToPlayer();
-        GameObject.FindGameObjectWithTag("Status").GetComponent<TextMeshProUGUI>().text = "Defend";
+        status.text = "Defend";
 
         yield return new WaitUntil(() => TM.BeatOne());
         yield return new WaitUntil(() => TM.BeatLast());
         yield return new WaitUntil(() => TM.BeatOne());
 
-        GameObject.FindGameObjectWithTag("Status").GetComponent<TextMeshProUGUI>().text = "";
+        status.text = "";
         isDefending = false;
         IV.Disable();
         AnM.EnemyToIdle();
@@ -223,11 +238,13 @@ public class GameManager : MonoBehaviour
 
     void GameOver()
     {
-        GameObject.FindGameObjectWithTag("Status").GetComponent<TextMeshProUGUI>().text = "You Lose";
+        status.text = "You Lose";
+        player.Heal(100);
     }
 
     void Win()
     {
-        GameObject.FindGameObjectWithTag("Status").GetComponent<TextMeshProUGUI>().text = "You Win";
+        status.text = "You Win";
+        enemy.Heal(100);
     }
 }
