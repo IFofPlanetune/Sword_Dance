@@ -16,7 +16,7 @@ public class MenuManager : MonoBehaviour
     
     public enum action
     {
-        attack,heal
+        attack,heal,pattern
     }
 
     void Start()
@@ -92,7 +92,16 @@ public class MenuManager : MonoBehaviour
         switch(selAction)
         {
             case action.attack:
-                StartCoroutine(GM.Attack());
+                switch (GM.atkStyle)
+                {
+                    case GameManager.attackStyle.pattern:
+                        StartCoroutine(GM.PatternAttack(null));
+                        break;
+                    case GameManager.attackStyle.free:
+                    default:
+                        StartCoroutine(GM.FreeAttack());
+                        break;
+                }
                 break;
             case action.heal:
                 StartCoroutine(GM.Heal());

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -16,6 +17,9 @@ public class Entity : MonoBehaviour
     public float mAtk;
     public float def;
     public float mDef;
+
+    public List<Pattern> patterns;
+    private Dictionary<int, InputManager.attackType> dict;
 
     public float GetAttack(InputManager.attackType type)
     {
@@ -67,4 +71,17 @@ public class Entity : MonoBehaviour
     {
         GM.HandleDeath(gameObject.tag);
     }
+
+    public Pattern GetPattern(int id)
+    {
+        return patterns[id];
+    }
+
+    public Pattern GetRandomPattern()
+    {
+        System.Random rand = new System.Random();
+        int r = rand.Next(patterns.Count);
+        return GetPattern(r);
+    }
+
 }

@@ -19,13 +19,20 @@ public class GameManager : MonoBehaviour
     public int bpm;
     private bool firstFrame;
 
-    private TextMeshProUGUI status; 
+    private TextMeshProUGUI status;
 
+    public attackStyle atkStyle;
     private bool isAttacking;
     private bool isDefending;
     private bool defenseEnabled;
+    private Pattern currentPattern;
 
     private string lastText;
+
+    public enum attackStyle
+    {
+        free, pattern
+    }
 
     void Start()
     {
@@ -42,6 +49,7 @@ public class GameManager : MonoBehaviour
         player.GM = this;
         enemy.GM = this;
 
+        atkStyle = attackStyle.free;
         isAttacking = false;
         isDefending = false;
         defenseEnabled = true;
@@ -77,6 +85,11 @@ public class GameManager : MonoBehaviour
         IV.Reset();
     }
 
+    public void ChangeGranularity(int smallest)
+    {
+        TimingParameters.smallestUnit = smallest;
+    }
+
     public void HandleAction(float delay, InputManager.attackType type)
     {
         if (!isAttacking && !isDefending && !TM.calibrationFlag)
@@ -87,18 +100,26 @@ public class GameManager : MonoBehaviour
         //Handle Attack
         if (isAttacking)
         {
-            if (TM.CheckAttack(delay))
-            {
-                Debug.Log("Successful Attack!");
-                AnM.PlayerAttack(type);
-                float dmg = Mathf.Max(player.GetAttack(type) - enemy.GetDefense(type), 1);
-                enemy.TakeDamage(dmg);
-            }
-            else
-            {
-                AnM.PlayerTrip();
-                IV.Disable();
-                isAttacking = false;
+            switch (atkStyle) {
+                case attackStyle.pattern:
+                    //TODO
+                    break;
+                case attackStyle.free:
+                default:
+                    if (TM.CheckAttack(delay))
+                    {
+                        Debug.Log("Successful Attack!");
+                        AnM.PlayerAttack(type);
+                        float dmg = Mathf.Max(player.GetAttack(type) - enemy.GetDefense(type), 1);
+                        enemy.TakeDamage(dmg);
+                    }
+                    else
+                    {
+                        AnM.PlayerTrip();
+                        IV.Disable();
+                        isAttacking = false;
+                    }
+                    break;
             }
         }
         //Handle Defense
@@ -111,7 +132,7 @@ public class GameManager : MonoBehaviour
             if (TM.CheckDefense(delay, type, out index))
             {
                 Debug.Log("Block successful!");
-                enemy.DeflectAttack(index);
+                currentPattern.MatchPattern(index);
             }
             else
             {
@@ -150,10 +171,12 @@ public class GameManager : MonoBehaviour
         AnM.EnemyAttack(type);
     }
 
-    public IEnumerator Attack()
+    public IEnumerator FreeAttack()
     {
         MM.TurnOff();
         AnM.MovePlayerToEnemy();
+        status.text = "Get Ready";
+
         //wait for new beat to start
         yield return new WaitUntil(() => TM.BeatLast());
         yield return new WaitUntil(() => TM.BeatOne());
@@ -169,6 +192,12 @@ public class GameManager : MonoBehaviour
         IV.Disable();
         AnM.PlayerToIdle();
         StartCoroutine(Defend());
+    }
+
+    public IEnumerator PatternAttack(GameObject pattern)
+    {
+        //TODO
+        yield return null;
     }
 
 
@@ -191,7 +220,9 @@ public class GameManager : MonoBehaviour
 
     public IEnumerator Defend()
     {
-        TM.SetDefense(enemy.GetRandomPattern());
+        currentPattern = enemy.GetRandomPattern();
+        currentPattern.Setup();
+        TM.SetPattern(currentPattern.dictInst);
         //Wait empty beat for player to react
         yield return new WaitUntil(() => TM.BeatOne());
         yield return new WaitUntil(() => TM.BeatLast());
@@ -211,13 +242,13 @@ public class GameManager : MonoBehaviour
         AnM.EnemyToIdle();
 
         float dmg = 0;
-        foreach(InputManager.attackType atk in enemy.SuccessfulAttacks())
+        foreach(InputManager.attackType atk in currentPattern.UnmatchedPatterns())
         {
             dmg += enemy.GetAttack(atk) - player.GetDefense(atk);
         }
         player.TakeDamage(dmg);
 
-        enemy.DestroyPattern();
+        currentPattern.DestroyInstance();
         MM.TurnOn();
     }
 

@@ -31,6 +31,7 @@ public class InputVisualizer : MonoBehaviour
         ball = transform.Find("Ball").gameObject;
         ballStart = transform.Find("BallStart").position;
 
+
         attacks = new List<GameObject>();
         melee = Resources.Load("Prefabs/Melee") as GameObject;
         magic = Resources.Load("Prefabs/Magic") as GameObject;

@@ -134,9 +134,9 @@ public class TimingManager : MonoBehaviour
         return false;
     }
 
-    public void SetDefense(Dictionary<int,InputManager.attackType> d)
+    public void SetPattern(Dictionary<int,InputManager.attackType> p)
     {
-        pattern = new Dictionary<int,InputManager.attackType>(d);
+        pattern = new Dictionary<int,InputManager.attackType>(p);
         StartCoroutine(AttackSignal());
     }
 
@@ -219,7 +219,7 @@ public class BeatWrapper
             {
                 beatOne = false;
             }
-
+            //status.text = counter.ToString();
             await Task.Delay(TimeSpan.FromSeconds(Mathf.Max(((1f / tps) - delay),0)));
             timer.Stop();
             delay = Mathf.Max((timer.ElapsedTicks / f) - ((1f / tps) - delay), -(1f / tps));

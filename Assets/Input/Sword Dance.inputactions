@@ -52,6 +52,22 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "Press"
+                },
+                {
+                    "name": "Smallest4",
+                    "type": "Button",
+                    "id": "3cdbdb0d-1ae7-4f6e-bcdb-ca1c26659d08",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press"
+                },
+                {
+                    "name": "Smallest8",
+                    "type": "Button",
+                    "id": "cdc09b48-fbc4-444a-a10d-03f426226151",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press"
                 }
             ],
             "bindings": [
@@ -426,6 +442,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "MenuConfirm",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ee24bf23-e765-4154-be88-c44b6a476aef",
+                    "path": "<Keyboard>/f1",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Smallest4",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "bbd7e8ea-86c7-4a6a-a61b-96dd5a61c2cf",
+                    "path": "<Keyboard>/f2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Smallest8",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
