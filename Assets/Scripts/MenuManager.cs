@@ -5,12 +5,13 @@ using UnityEngine;
 public class MenuManager : MonoBehaviour
 {
     private GameObject menu;
-    private GameObject pointer;
+    private GameObject actionMenu;
+    private GameObject actionPointer;
     public GameManager GM;
 
     private bool active;
     private action selAction;
-    private int pointerID;
+    private int actionPointerID;
     private int size;
     private Vector3 defaultPos;
     
@@ -22,13 +23,14 @@ public class MenuManager : MonoBehaviour
     void Start()
     {
         menu = GameObject.FindGameObjectWithTag("Menu");
-        pointer = menu.transform.GetChild(0).gameObject;
+        actionMenu = menu.transform.GetChild(0).gameObject;
+        actionPointer = actionMenu.transform.GetChild(0).gameObject;
 
         active = true;
         selAction = action.attack;
-        pointerID = 1;
-        size = menu.transform.childCount - 1;
-        defaultPos = pointer.transform.position;
+        actionPointerID = 1;
+        size = actionMenu.transform.childCount - 1;
+        defaultPos = actionPointer.transform.position;
     }
 
     public void TurnOff()
@@ -48,12 +50,12 @@ public class MenuManager : MonoBehaviour
         if (!active)
             return;
 
-        pointerID--;
-        if (pointerID < 1)
-            pointerID = size;
-        float newY = ((pointerID - 1) * pointer.GetComponent<RectTransform>().rect.height);
-        pointer.transform.position = defaultPos - new Vector3(0, newY);
-        SwitchAction(menu.transform.GetChild(pointerID).name);
+        actionPointerID--;
+        if (actionPointerID < 1)
+            actionPointerID = size;
+        float newY = ((actionPointerID - 1) * actionPointer.GetComponent<RectTransform>().rect.height);
+        actionPointer.transform.position = defaultPos - new Vector3(0, newY);
+        SwitchAction(actionMenu.transform.GetChild(actionPointerID).name);
 
     }
 
@@ -62,11 +64,11 @@ public class MenuManager : MonoBehaviour
         if (!active)
             return;
 
-        pointerID++;
-        pointerID = ((pointerID - 1) % size) + 1;
-        float newY = ((pointerID - 1) * pointer.GetComponent<RectTransform>().rect.height);
-        pointer.transform.position = defaultPos - new Vector3(0, newY);
-        SwitchAction(menu.transform.GetChild(pointerID).name);
+        actionPointerID++;
+        actionPointerID = ((actionPointerID - 1) % size) + 1;
+        float newY = ((actionPointerID - 1) * actionPointer.GetComponent<RectTransform>().rect.height);
+        actionPointer.transform.position = defaultPos - new Vector3(0, newY);
+        SwitchAction(actionMenu.transform.GetChild(actionPointerID).name);
     }
 
     public void SwitchAction(string name)
