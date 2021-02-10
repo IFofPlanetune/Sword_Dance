@@ -38,6 +38,7 @@ public class GameManager : MonoBehaviour
     {
         //set cross references
         MM.GM = this;
+        MM.player = player;
         IM.GM = this;
         TM.GM = this;
         AuM.GM = this;
@@ -49,7 +50,6 @@ public class GameManager : MonoBehaviour
         player.GM = this;
         enemy.GM = this;
 
-        atkStyle = attackStyle.free;
         isAttacking = false;
         isDefending = false;
         defenseEnabled = true;
@@ -81,7 +81,7 @@ public class GameManager : MonoBehaviour
     public void Reset()
     {
         TM.Reset();
-        Debug.Log("Reset");
+        //Debug.Log("Reset");
         IV.Reset();
     }
 
@@ -194,7 +194,7 @@ public class GameManager : MonoBehaviour
         StartCoroutine(Defend());
     }
 
-    public IEnumerator PatternAttack(GameObject pattern)
+    public IEnumerator PatternAttack(Pattern pattern)
     {
         //TODO
         yield return null;

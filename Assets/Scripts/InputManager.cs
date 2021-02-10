@@ -74,6 +74,24 @@ public class InputManager : MonoBehaviour
         MM.Down();
     }
 
+    public void MenuLeft(InputAction.CallbackContext context)
+    {
+        if (!context.performed)
+            return;
+        if (TM.calibrationFlag)
+            return;
+        MM.SwitchAttack(-1);
+    }
+
+    public void MenuRight(InputAction.CallbackContext context)
+    {
+        if (!context.performed)
+            return;
+        if (TM.calibrationFlag)
+            return;
+        MM.SwitchAttack(1);
+    }
+
     public void MenuConfirm(InputAction.CallbackContext context)
     {
         if (!context.performed)

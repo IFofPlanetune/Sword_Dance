@@ -54,17 +54,17 @@
                     "interactions": "Press"
                 },
                 {
-                    "name": "Smallest4",
-                    "type": "Button",
-                    "id": "3cdbdb0d-1ae7-4f6e-bcdb-ca1c26659d08",
+                    "name": "MenuLeft",
+                    "type": "Value",
+                    "id": "4d9908fc-95b1-4a2c-abba-6d46c906dbad",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "Press"
                 },
                 {
-                    "name": "Smallest8",
+                    "name": "MenuRight",
                     "type": "Button",
-                    "id": "cdc09b48-fbc4-444a-a10d-03f426226151",
+                    "id": "1eb6eb2e-f412-40b9-acc8-ff3bd922014a",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "Press"
@@ -447,23 +447,23 @@
                 },
                 {
                     "name": "",
-                    "id": "ee24bf23-e765-4154-be88-c44b6a476aef",
-                    "path": "<Keyboard>/f1",
+                    "id": "d923cc85-e787-4e83-8c35-3e25418508b7",
+                    "path": "<Keyboard>/leftArrow",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Smallest4",
+                    "action": "MenuLeft",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "bbd7e8ea-86c7-4a6a-a61b-96dd5a61c2cf",
-                    "path": "<Keyboard>/f2",
+                    "id": "1f1e48c9-bb0a-45ca-b99a-89a49eec13cd",
+                    "path": "<Keyboard>/rightArrow",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Smallest8",
+                    "action": "MenuRight",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
