@@ -104,7 +104,7 @@ public class MenuManager : MonoBehaviour
         attackID = attackID % player.patterns.Count;
         Pattern pattern = player.GetPattern(attackID);
         attackName.text = pattern.name;
-        pattern.SpawnInstance();
+        pattern.Setup();
     }
 
     public void SwitchAction(string name)
@@ -174,6 +174,6 @@ public class MenuManager : MonoBehaviour
         attackID = 0;
         Pattern pattern = player.GetPattern(attackID);
         attackName.text = pattern.name;
-        pattern.SpawnInstance();
+        pattern.Setup();
     }
 }

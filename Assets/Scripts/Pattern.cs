@@ -31,7 +31,7 @@ public class Pattern : ScriptableObject
         return dict;
     }
 
-    public void SpawnInstance()
+    private void SpawnInstance()
     {
         vInstance = Instantiate(visualization, GameObject.Find("InputVisualizer").transform);
     }

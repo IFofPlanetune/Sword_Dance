@@ -22,9 +22,9 @@ public class GameManager : MonoBehaviour
     private TextMeshProUGUI status;
 
     public attackStyle atkStyle;
-    private bool isAttacking;
-    private bool isDefending;
-    private bool defenseEnabled;
+    public bool isAttacking;
+    public bool isDefending;
+    private bool matchingEnabled;
     private Pattern currentPattern;
 
     private string lastText;
@@ -52,7 +52,7 @@ public class GameManager : MonoBehaviour
 
         isAttacking = false;
         isDefending = false;
-        defenseEnabled = true;
+        matchingEnabled = true;
 
 
         //start Timing Manager and Input Visualization
@@ -102,11 +102,23 @@ public class GameManager : MonoBehaviour
         {
             switch (atkStyle) {
                 case attackStyle.pattern:
-                    //TODO
+                    int index;
+                    if (TM.CheckPattern(delay, type, out index))
+                    {
+                        Debug.Log("Attack successful!");
+                        AnM.PlayerAttack(type);
+                        currentPattern.MatchPattern(index);
+                    }
+                    else
+                    {
+                        AnM.PlayerTrip();
+                        IV.Disable();
+                        isAttacking = false;
+                    }
                     break;
                 case attackStyle.free:
                 default:
-                    if (TM.CheckAttack(delay))
+                    if (TM.CheckFree(delay))
                     {
                         Debug.Log("Successful Attack!");
                         AnM.PlayerAttack(type);
@@ -125,29 +137,29 @@ public class GameManager : MonoBehaviour
         //Handle Defense
         if (isDefending)
         {
-            if (!defenseEnabled)
+            if (!matchingEnabled)
                 return;
             int index;
             AnM.PlayerDefense(type);
-            if (TM.CheckDefense(delay, type, out index))
+            if (TM.CheckPattern(delay, type, out index))
             {
                 Debug.Log("Block successful!");
                 currentPattern.MatchPattern(index);
             }
             else
             {
-                StartCoroutine(DisableDefense());
+                StartCoroutine(DisableMatching());
             }
         }
     }
 
-    IEnumerator DisableDefense()
+    IEnumerator DisableMatching()
     {
-        defenseEnabled = false;
+        matchingEnabled = false;
         IV.Disable();
         //wait for one tick
         yield return new WaitForSeconds(1 / (bpm / 60f * (TimingParameters.smallestUnit / 4)));
-        defenseEnabled = true;
+        matchingEnabled = true;
         IV.Enable();
     }
 
@@ -196,8 +208,41 @@ public class GameManager : MonoBehaviour
 
     public IEnumerator PatternAttack(Pattern pattern)
     {
-        //TODO
-        yield return null;
+        currentPattern = pattern;
+        TM.SetPattern(currentPattern.dictInst, false);
+        MM.TurnOff();
+        AnM.MovePlayerToEnemy();
+        status.text = "Get Ready";
+
+        //wait for new beat to start
+        yield return new WaitUntil(() => TM.BeatLast());
+        yield return new WaitUntil(() => TM.BeatOne());
+
+        isAttacking = true;
+        IV.Enable();
+        status.text = "Attack";
+
+        yield return new WaitUntil(() => TM.BeatLast());
+
+        //if pattern fully matched
+        if(currentPattern.UnmatchedPatterns().Count == 0)
+        {
+            currentPattern.DestroyInstance();
+            currentPattern.Setup();
+            float dmg = 0;
+            foreach(InputManager.attackType atk in currentPattern.values)
+            {
+                dmg += player.GetAttack(atk) - enemy.GetDefense(atk);
+            }
+            enemy.TakeDamage(dmg);
+        }
+        currentPattern.DestroyInstance();
+
+        status.text = "Enemy Turn";
+        isAttacking = false;
+        IV.Disable();
+        AnM.PlayerToIdle();
+        StartCoroutine(Defend());
     }
 
 
@@ -222,7 +267,7 @@ public class GameManager : MonoBehaviour
     {
         currentPattern = enemy.GetRandomPattern();
         currentPattern.Setup();
-        TM.SetPattern(currentPattern.dictInst);
+        TM.SetPattern(currentPattern.dictInst, true);
         //Wait empty beat for player to react
         yield return new WaitUntil(() => TM.BeatOne());
         yield return new WaitUntil(() => TM.BeatLast());

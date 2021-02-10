@@ -113,14 +113,14 @@ public class TimingManager : MonoBehaviour
         return delay;
     }
 
-    public bool CheckAttack(float delay)
+    public bool CheckFree(float delay)
     {
         Debug.Log("Delay %: " + delay / maxTime);
         return Mathf.Abs(delay/maxTime) <= TimingParameters.threshold;
     }
 
     //checks if success is successful - id denotes which attack is being tried to defend against
-    public bool CheckDefense(float delay, InputManager.attackType atk, out int id)
+    public bool CheckPattern(float delay, InputManager.attackType atk, out int id)
     {
         InputManager.attackType patAtk;
         id = beat.counter;
@@ -134,10 +134,11 @@ public class TimingManager : MonoBehaviour
         return false;
     }
 
-    public void SetPattern(Dictionary<int,InputManager.attackType> p)
+    public void SetPattern(Dictionary<int,InputManager.attackType> p, bool enemy)
     {
         pattern = new Dictionary<int,InputManager.attackType>(p);
-        StartCoroutine(AttackSignal());
+        if(enemy)
+            StartCoroutine(AttackSignal());
     }
 
     IEnumerator AttackSignal()
