@@ -68,6 +68,22 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "Press"
+                },
+                {
+                    "name": "FreeMode",
+                    "type": "Button",
+                    "id": "70b5a734-c55d-4257-8eef-73ffca1ed898",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press"
+                },
+                {
+                    "name": "PatternMode",
+                    "type": "Button",
+                    "id": "933b96fe-7aa6-4141-945d-41fefeaf0a1e",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press"
                 }
             ],
             "bindings": [
@@ -464,6 +480,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "MenuRight",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2cd7fd1e-9cfd-4582-a559-a24d24381153",
+                    "path": "<Keyboard>/f1",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "FreeMode",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "58a862e3-6a79-49d6-9bd3-521a9ffa4182",
+                    "path": "<Keyboard>/f2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "PatternMode",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

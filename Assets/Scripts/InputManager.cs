@@ -101,4 +101,22 @@ public class InputManager : MonoBehaviour
         MM.Select();
     }
 
+    public void SwapFree(InputAction.CallbackContext context)
+    {
+        if (!context.performed)
+            return;
+        if (TM.calibrationFlag)
+            return;
+        GM.SwitchStyle(GameManager.attackStyle.free);
+    }
+
+    public void SwapPattern(InputAction.CallbackContext context)
+    {
+        if (!context.performed)
+            return;
+        if (TM.calibrationFlag)
+            return;
+        GM.SwitchStyle(GameManager.attackStyle.pattern);
+    }
+
 }

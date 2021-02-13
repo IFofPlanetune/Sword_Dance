@@ -24,7 +24,7 @@ public class Tutorial : MonoBehaviour
     {
         if(Keyboard.current.escapeKey.wasPressedThisFrame)
         {
-            this.gameObject.SetActive(false);
+            Destroy(this.gameObject);
         }
         if(Keyboard.current.rightArrowKey.wasPressedThisFrame)
         {

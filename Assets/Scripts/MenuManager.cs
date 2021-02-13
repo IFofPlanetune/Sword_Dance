@@ -171,7 +171,6 @@ public class MenuManager : MonoBehaviour
         actionMenu.SetActive(false);
         attackMenu.SetActive(true);
         currentState = state.attack;
-        attackID = 0;
         Pattern pattern = player.GetPattern(attackID);
         attackName.text = pattern.name;
         pattern.Setup();

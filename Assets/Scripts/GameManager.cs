@@ -20,12 +20,16 @@ public class GameManager : MonoBehaviour
     private bool firstFrame;
 
     private TextMeshProUGUI status;
+    private TextMeshProUGUI style;
 
     public attackStyle atkStyle;
     public bool isAttacking;
     public bool isDefending;
     private bool matchingEnabled;
     private Pattern currentPattern;
+
+    private bool swappedStyle;
+    public GameObject pTutorial;
 
     private string lastText;
 
@@ -53,6 +57,7 @@ public class GameManager : MonoBehaviour
         isAttacking = false;
         isDefending = false;
         matchingEnabled = true;
+        swappedStyle = false;
 
 
         //start Timing Manager and Input Visualization
@@ -65,6 +70,7 @@ public class GameManager : MonoBehaviour
         StartCoroutine(FixStartup());
 
         status = GameObject.FindGameObjectWithTag("Status").GetComponent<TextMeshProUGUI>();
+        style = GameObject.FindGameObjectWithTag("Style").GetComponent<TextMeshProUGUI>();
     }
 
     void Update()
@@ -85,9 +91,16 @@ public class GameManager : MonoBehaviour
         IV.Reset();
     }
 
-    public void ChangeGranularity(int smallest)
+    public void SwitchStyle(attackStyle s)
     {
-        TimingParameters.smallestUnit = smallest;
+        atkStyle = s;
+        style.text = s.ToString() + " Mode";
+        if (!swappedStyle)
+        {
+            swappedStyle = !swappedStyle;
+            pTutorial.SetActive(true);
+        }
+
     }
 
     public void HandleAction(float delay, InputManager.attackType type)

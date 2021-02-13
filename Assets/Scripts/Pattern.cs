@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 
 [CreateAssetMenu]
@@ -92,26 +90,4 @@ public class Pattern : ScriptableObject
         }
     }
 
-}
-
-[CustomEditor(typeof(Pattern))]
-public class PatternEditor : Editor
-{
-    Pattern pattern;
-    public void OnEnable()
-    {
-        pattern = (Pattern)target;
-    }
-
-    public override void OnInspectorGUI()
-    {
-        DrawDefaultInspector();
-
-
-        if(GUILayout.Button("Setup Values"))
-        {
-            pattern.CreateValues();
-            EditorUtility.SetDirty(pattern);
-        }
-    }
 }
