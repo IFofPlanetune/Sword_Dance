@@ -205,11 +205,13 @@ public class GameManager : MonoBehaviour
         //wait for new beat to start
         yield return new WaitUntil(() => TM.BeatLast());
         yield return new WaitUntil(() => TM.BeatOne());
+        yield return new WaitUntil(() => TM.BeatLast());
 
         isAttacking = true;
         IV.Enable();
         status.text = "Attack";
 
+        yield return new WaitUntil(() => TM.BeatOne());
         yield return new WaitUntil(() => TM.BeatLast());
 
         status.text = "Enemy Turn";
